@@ -1,6 +1,9 @@
+# Beyond Part Models: Person Retrieval with Refined Part Pooling
+
+**Related Projects:** [Strong Triplet Loss Baseline](https://github.com/huanghoujing/person-reid-triplet-loss-baseline)
+
 This project implements PCB (Part-based Convolutional Baseline) of paper [Beyond Part Models: Person Retrieval with Refined Part Pooling](https://arxiv.org/abs/1711.09349) using [pytorch](https://github.com/pytorch/pytorch).
 
-**If you're looking for a strong triplet loss baseline, [check here](https://github.com/huanghoujing/person-reid-triplet-loss-baseline).**
 
 # Current Results
 
@@ -201,7 +204,7 @@ cmc_configs = {
 # Examples
 
 
-### Test PCB
+## Test PCB
 
 My training log and saved model weights for three datasets can be downloaded from [Google Drive](https://drive.google.com/open?id=1zuo_UIzldz29bXvhhIJIcI__Wf_8__vB) or [BaiduYun](https://pan.baidu.com/s/1o9jmKsE).
 
@@ -221,7 +224,7 @@ python script/experiment/train_pcb.py \
 --model_weight_file THE_DOWNLOADED_MODEL_WEIGHT_FILE
 ```
 
-### Train PCB
+## Train PCB
 
 You can also train it by yourself. The following command performs training, validation and finally testing automatically.
 
@@ -257,6 +260,37 @@ For more usage of TensorBoard, see the website and the help:
 ```bash
 tensorboard --help
 ```
+
+
+## Visualize Ranking List
+
+Specify
+- a dataset name (one of `['market1501', 'cuhk03', 'duke']`)
+- either `model_weight_file` (the downloaded `model_weight.pth`) OR `ckpt_file` (saved `ckpt.pth` during training)
+- an experiment directory for saving images and log
+
+in the following command and run it.
+
+```bash
+python script/experiment/visualize_rank_list.py \
+-d '(0,)' \
+--num_queries 16 \
+--rank_list_size 10 \
+--dataset DATASET_NAME \
+--exp_dir EXPERIMENT_DIRECTORY \
+--model_weight_file '' \
+--ckpt_file ''
+```
+
+Each query image and its ranking list would be saved to an image in directory `EXPERIMENT_DIRECTORY/rank_lists`. As shown in following examples, green boundary is added to true positive, and red to false positve.
+
+![](example_rank_lists_on_Market1501/00000156_0003_00000009.jpg)
+
+![](example_rank_lists_on_Market1501/00000305_0001_00000001.jpg)
+
+![](example_rank_lists_on_Market1501/00000492_0005_00000001.jpg)
+
+![](example_rank_lists_on_Market1501/00000881_0002_00000006.jpg)
 
 
 # Time and Space Consumption

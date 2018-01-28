@@ -20,7 +20,6 @@ from bpm.model.PCBModel import PCBModel as Model
 
 from bpm.utils.utils import time_str
 from bpm.utils.utils import str2bool
-from bpm.utils.utils import tight_float_str as tfs
 from bpm.utils.utils import may_set_mode
 from bpm.utils.utils import load_state_dict
 from bpm.utils.utils import load_ckpt
@@ -45,8 +44,8 @@ class Config(object):
     parser.add_argument('--trainset_part', type=str, default='trainval',
                         choices=['trainval', 'train'])
 
-    # Only for training set.
     parser.add_argument('--resize_h_w', type=eval, default=(384, 128))
+    # These several only for training set
     parser.add_argument('--crop_prob', type=float, default=0)
     parser.add_argument('--crop_ratio', type=float, default=1)
     parser.add_argument('--mirror', type=str2bool, default=True)
@@ -79,6 +78,8 @@ class Config(object):
     # gpu ids
     self.sys_device_ids = args.sys_device_ids
 
+    # If you want to make your results exactly reproducible, you have
+    # to fix a random seed.
     if args.set_seed:
       self.seed = 1
     else:
@@ -92,8 +93,8 @@ class Config(object):
     # Dataset #
     ###########
 
-    # If you want to exactly reproduce the result in training, you have to set
-    # num of threads to 1.
+    # If you want to make your results exactly reproducible, you have
+    # to also set num of threads to 1 during training.
     if self.seed is not None:
       self.prefetch_threads = 1
     else:
