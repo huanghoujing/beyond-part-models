@@ -55,8 +55,10 @@ class Config(object):
     parser.add_argument('--steps_per_log', type=int, default=20)
     parser.add_argument('--epochs_per_val', type=int, default=1)
 
-    parser.add_argument('--last_conv_stride', type=int, default=1,
-                        choices=[1, 2])
+    parser.add_argument('--last_conv_stride', type=int, default=1, choices=[1, 2])
+    # When the stride is changed to 1, we can compensate for the receptive field
+    # using dilated convolution. However, experiments show dilated convolution is useless.
+    parser.add_argument('--last_conv_dilation', type=int, default=1, choices=[1, 2])
     parser.add_argument('--num_stripes', type=int, default=6)
     parser.add_argument('--local_conv_out_channels', type=int, default=256)
 
@@ -179,6 +181,9 @@ class Config(object):
     # The last block of ResNet has stride 2. We can set the stride to 1 so that
     # the spatial resolution before global pooling is doubled.
     self.last_conv_stride = args.last_conv_stride
+    # When the stride is changed to 1, we can compensate for the receptive field
+    # using dilated convolution. However, experiments show dilated convolution is useless.
+    self.last_conv_dilation = args.last_conv_dilation
     # Number of stripes (parts)
     self.num_stripes = args.num_stripes
     # Output channel of 1x1 conv

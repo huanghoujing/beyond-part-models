@@ -7,18 +7,28 @@ This project implements PCB (Part-based Convolutional Baseline) of paper [Beyond
 
 # Current Results
 
-The reproduced PCB is as follows. `(Paper)` means the scores reported in the paper; `R.R.` means using re-ranking.
+The reproduced PCB is as follows. 
+- `(Shared 1x1 Conv)` and `(Independent 1x1 Conv)` means the last 1x1 conv layers for stripes are shared or independent, respectively;
+- `(Paper)` means the scores reported in the paper; 
+- `R.R.` means using re-ranking.
 
-|                   | Rank-1 (%) | mAP (%) | R.R. Rank-1 (%) | R.R. mAP (%) |
-| ---               | :---: | :---: | :---: | :---: |
-| Market1501        | 90.86 | 73.25 | 92.58 | 88.02 |
-| Market1501 (Paper)| 92.40 | 77.30 | -     | -     |
-| Duke              | 82.00 | 64.88 | 86.40 | 81.77 |
-| Duke (Paper)      | 81.90 | 65.30 | -     | -     |
-| CUHK03            | 47.29 | 42.05 | 56.50 | 57.91 |
-| CUHK03 (Paper)    | 61.30 | 54.20 | -     | -     |
 
-The reproduction is achieved on Duke, requires tuning on Market1501, and is far from satisfying on CUHK03.
+|                                   | Rank-1 (%) | mAP (%) | R.R. Rank-1 (%) | R.R. mAP (%) |
+| ---                               | :---: | :---: | :---: | :---: |
+| Market1501 (Shared 1x1 Conv)      | 90.86 | 73.25 | 92.58 | 88.02 |
+| Market1501 (Independent 1x1 Conv) | 92.87 | 78.54 | 93.94 | 90.17 |
+| Market1501 (Paper)                | 92.40 | 77.30 | -     | -     |
+| | | | | |
+| Duke (Shared 1x1 Conv)            | 82.00 | 64.88 | 86.40 | 81.77 |
+| Duke (Independent 1x1 Conv)       | 84.47 | 69.94 | 88.78 | 84.73 |
+| Duke (Paper)                      | 81.90 | 65.30 | -     | -     |
+| | | | | |
+| CUHK03 (Shared 1x1 Conv)          | 47.29 | 42.05 | 56.50 | 57.91 |
+| CUHK03 (Independent 1x1 Conv)     | 59.14 | 53.93 | 69.07 | 70.17 |
+| CUHK03 (Paper)                    | 61.30 | 54.20 | -     | -     |
+
+We can see that independent 1x1 conv layers for different stripes are critical for the performance. The performance on CUHK03 is still worse than the paper, while those on Market1501 and Duke are better.
+
 
 # Resources
 
@@ -206,7 +216,7 @@ cmc_configs = {
 
 ## Test PCB
 
-My training log and saved model weights for three datasets can be downloaded from [Google Drive](https://drive.google.com/open?id=1zuo_UIzldz29bXvhhIJIcI__Wf_8__vB) or [BaiduYun](https://pan.baidu.com/s/1o9jmKsE).
+My training log and saved model weights (trained with independent 1x1 conv) for three datasets can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1G3mLsI1g8ZZkHyol6d3yHpygZeFsENqO?usp=sharing) or [BaiduYun](https://pan.baidu.com/s/1zfjeiePvr1TlBtu7yGovlQ).
 
 Specify
 - a dataset name (one of `market1501`, `cuhk03`, `duke`)

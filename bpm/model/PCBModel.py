@@ -10,19 +10,26 @@ class PCBModel(nn.Module):
   def __init__(
       self,
       last_conv_stride=1,
+      last_conv_dilation=1,
       num_stripes=6,
       local_conv_out_channels=256,
       num_classes=0
   ):
     super(PCBModel, self).__init__()
 
-    self.base = resnet50(pretrained=True, last_conv_stride=last_conv_stride)
-
-    self.local_conv = nn.Conv2d(2048, local_conv_out_channels, 1)
-    self.local_bn = nn.BatchNorm2d(local_conv_out_channels)
-    self.local_relu = nn.ReLU(inplace=True)
-
+    self.base = resnet50(
+      pretrained=True,
+      last_conv_stride=last_conv_stride,
+      last_conv_dilation=last_conv_dilation)
     self.num_stripes = num_stripes
+
+    self.local_conv_list = nn.ModuleList()
+    for _ in range(num_stripes):
+      self.local_conv_list.append(nn.Sequential(
+        nn.Conv2d(2048, local_conv_out_channels, 1),
+        nn.BatchNorm2d(local_conv_out_channels),
+        nn.ReLU(inplace=True)
+      ))
 
     if num_classes > 0:
       self.fc_list = nn.ModuleList()
@@ -50,7 +57,7 @@ class PCBModel(nn.Module):
         feat[:, :, i * stripe_h: (i + 1) * stripe_h, :],
         (stripe_h, feat.size(-1)))
       # shape [N, c, 1, 1]
-      local_feat = self.local_relu(self.local_bn(self.local_conv(local_feat)))
+      local_feat = self.local_conv_list[i](local_feat)
       # shape [N, c]
       local_feat = local_feat.view(local_feat.size(0), -1)
       local_feat_list.append(local_feat)
