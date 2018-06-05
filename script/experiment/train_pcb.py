@@ -119,7 +119,7 @@ class Config(object):
 
     self.train_mirror_type = 'random' if args.mirror else None
     self.train_batch_size = args.batch_size
-    self.train_final_batch = True
+    self.train_final_batch = False
     self.train_shuffle = True
 
     self.test_mirror_type = None
@@ -306,7 +306,8 @@ def main():
 
   train_set = create_dataset(**cfg.train_set_kwargs)
   num_classes = len(train_set.ids2labels)
-  val_set = create_dataset(**cfg.val_set_kwargs)
+  # The combined dataset does not provide val set currently.
+  val_set = None if cfg.dataset == 'combined' else create_dataset(**cfg.val_set_kwargs)
 
   test_sets = []
   test_set_names = []
@@ -465,7 +466,7 @@ def main():
     ##########################
 
     mAP, Rank1 = 0, 0
-    if (ep + 1) % cfg.epochs_per_val == 0:
+    if ((ep + 1) % cfg.epochs_per_val == 0) and (val_set is not None):
       mAP, Rank1 = validate()
 
     # Log to TensorBoard
